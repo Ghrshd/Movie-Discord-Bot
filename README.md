@@ -9,4 +9,6 @@ List of Commands
 |-r or -ratting|Get ratting|
 |-p or -plot|Get plot|
 |-a or -awards|Get awards|
-|-as or -actorsr|Find the name of a movie of a given actor|
+|-as or -actorsr|The movies a given actor is in|
+|-l or -lengh|How long the movie is|
+|-sum or -summery| Will get -r,-p,-l together|
