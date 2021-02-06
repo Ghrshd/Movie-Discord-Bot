@@ -12,3 +12,4 @@ List of Commands
 |-as or -actorsr|The movies a given actor is in|
 |-l or -lengh|How long the movie is|
 |-sum or -summery| Will get -r,-p,-l together|
+|-h or -help|A list of the commands|
