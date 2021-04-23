@@ -1,11 +1,13 @@
+from configparser import MissingSectionHeaderError
+from os import O_SEQUENTIAL
 import string
 from sys import prefix
+from discord.message import Message
 from imdb import IMDb
 import discord
 from discord.ext import commands
 import random
 import json
-from token.py import *
 
 client = commands.Bot(command_prefix='|')
 
@@ -13,6 +15,7 @@ client = commands.Bot(command_prefix='|')
 @client.event
 async def on_ready():
     print("Bot Ready")
+
 
 def mlengh(movie):
     lengh = str(movie.data['runtimes'])
@@ -24,7 +27,8 @@ def mlengh(movie):
     minues = (round(lenin % 60))
     mlengh.time = f"{hours} hours, {minues} minues"
 
-@client.command(aliases=['s'])
+
+@client.command(aliases=['r'])
 async def rating(ctx, *, question):
 
     ia = IMDb()
@@ -44,6 +48,7 @@ async def rating(ctx, *, question):
     embed.set_footer(text=mlengh.time)
     embed.set_thumbnail(url=img)
     await ctx.send(embed=embed)
+    print(img)
 
 
 @client.command(aliases=['c'])
@@ -77,7 +82,8 @@ async def actorSearch(ctx, *, question):
     actorSear = ia.search_person(question)
     ida = actorSear[0].personID
     bio = ia.get_person_biography(ida)
-    actor = ia.get_person(ida, info=['biography', 'other works','awards','trivia','birth date'])
+    actor = ia.get_person(
+        ida, info=['biography', 'other works', 'awards', 'trivia', 'birth date'])
     trivia = actor['trivia']
     tlen = len(trivia)
     print(tlen)
@@ -88,12 +94,15 @@ async def actorSearch(ctx, *, question):
     li = list(titleStrings.split(","))
     stringCast = " "
 
-    triviaoutput = random.randint(1,tlen)
+    triviaoutput = random.randint(1, tlen)
     output = f"***age:***{actor['birth date']} \n ***trivia:*** {trivia[triviaoutput]} \n \n ***stared in:*** {li[0]}, {li[1]}, {li[2]}, {li[3]}, {li[4]}"
-    #?awards, stars in , main ganres 
+    #?awards, stars in , main ganres
     actor_results = ia.get_person_filmography(ida)
+    #print(actor.summary())
     movies_acted = actor.get('actor')
-    a =len(actor['other works'])
+    #print(actor.summary())
+    a = len(actor['other works'])
+    #print(actor['awards'])
     x = 5
     works = []
     while x != 0:
@@ -110,16 +119,151 @@ async def actorSearch(ctx, *, question):
     img = actor['headshot']
     embed.set_thumbnail(url=img)
     await ctx.send(embed=embed)
+#?game
 
+
+@client.command(aliases=['quiz'])
+async def Quiz(ctx):
+    temp = []
+    main = []
+
+    def Getmovie():
+        error = 0
+        ia = IMDb()
+        #? loop though 4 times
+        #? append to list
+        #? append list to main list
+        for i in range(5):
+            temp = []
+
+            ran = random.randint(0, 250)
+
+            top = ia.get_top250_movies()
+            picked = f"{top[ran]}"
+            movies = ia.search_movie(picked)
+            ida = movies[0].movieID
+            movie = ia.get_movie(ida)
+            cast = []
+            actor = movie['cast'][0]
+            actorAndRoll = f"{actor['name']} as {actor.currentRole}"
+            cast.append(actorAndRoll)
+
+            temp.append(movie.data['title'])
+            temp.append(movie.data['rating'])
+            temp.append(movie.data['year'])
+            temp.append(actor['name'])
+            temp.append(f"{actor.currentRole}")
+            try:
+                temp.append(movie['box office']['Cumulative Worldwide Gross'])
+                main.append(temp)
+                temp = []
+
+            except:
+                error = "no boxOffice"
+                temp = []
+        return error
+
+    Getmovie()
+    print(Getmovie())
+    if Getmovie() == "no boxOffice":
+        typeQuest = random.randint(1, 4)
+        print("yeet code")
+        typeQuestList = typeQuest
+    else:
+        typeQuest = random.randint(1, 5)
+        typeQuestList = typeQuest
+
+    print("typeQuest before", typeQuest)
+    print(main)
+    possAnswers = []
+    #* possAnswers = [main[0][0], main[1][0], main[2][0], main[3][0], main[4][0]]
+    i = 0
+    QuestionNumber = 0
+    #? sort the array so i dont need to use these
+    if typeQuest == 1:
+        typeQuestList = 0
+    if typeQuest == 2:
+        typeQuestList = 1
+    if typeQuest == 3:
+        typeQuestList = 3
+    if typeQuest == 4:
+        typeQuestList = 2
+    if typeQuest == 5:
+        typeQuestList = 5
+    #? make a more effective random system
+    print("Listval = ", typeQuestList)
+    possAnswers = [main[0][typeQuestList], main[1][typeQuestList], main[2]
+                   [typeQuestList], main[3][typeQuestList], main[4][typeQuestList]]
+    print("pos ans =", possAnswers)
+    RandomAns = random.sample(possAnswers, 5)
+
+    if typeQuest == 1:
+        question = f"what movie stars {main[QuestionNumber][3]} as {main[QuestionNumber][4]}"
+    if typeQuest == 2:
+        question = f"what is the IMDB rating of {main[QuestionNumber][0]}"
+    if typeQuest == 3:
+        question = f"who plays as {main[QuestionNumber][4]} in {main[QuestionNumber][0]}"
+    if typeQuest == 4:
+        question = f"what years was {main[QuestionNumber][0]} released"
+    if typeQuest == 5:
+        question = f"how much did {main[QuestionNumber][0]} gross"
+        
+    print("typeQuestion", typeQuest)
+    output = f":one: - {RandomAns[0]} \n :two: - {RandomAns[1]} \n :three: - {RandomAns[2]} \n :four: - {RandomAns[3]} \n :five: - {RandomAns[4]}"
+    #output = "k"
+    print("2nd", RandomAns)
+    print("final list val = ", typeQuestList)
+
+    #print(f"aadada what years was {main[1][0]} released")
+    print("question ", question)
+    embed = discord.Embed(
+        title=question,
+        description=output,
+        colour=discord.Colour.red()
+    )
+    #* get the amount anwered right and username + time taken
+    author = ctx.message.author
+    pfp = author.avatar_url
+    img = pfp
+    embed.set_footer(text=f"{QuestionNumber + 1}/5")
+    embed.set_thumbnail(url=img)
+    message = ctx.send(embed=embed)
+    await message
+
+    #?year
+    #? rating (closer better)
+"""    #? 
+#?change prefix
+def get_prefix(client, message):
+    with open('prefixes.json', 'r') as file:
+        prefixs = json.load(file)
+
+    return prefixs[str(message.guild.id)]
+
+@client.event
+async def on_guild_join(guild):
+    with open('prefixes.json', 'r') as file:
+        prefixs = json.load(file)
+
+    prefixs[str(guild.id)] = '|'
+
+    with open('prefixes.json', 'w') as file:
+        json.dump(prefixs, file, indent=4)
+
+@client.event
+
+
+
+client = commands.Bot(command_prefix= get_prefix)
+"""
 #?suggest
-    #? genre
+#? genre
 
 #? top movies
 
 #?top indian
 
-#?bottom 
-
+#?bottom
 client.run(f'{Token}')
 
 #* https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.wait_for
