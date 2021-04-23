@@ -8,7 +8,6 @@ import discord
 from discord.ext import commands
 import random
 import json
-
 client = commands.Bot(command_prefix='|')
 
 
@@ -126,6 +125,7 @@ async def actorSearch(ctx, *, question):
 async def Quiz(ctx):
     temp = []
     main = []
+    total = 0
 
     def Getmovie():
         error = 0
@@ -196,7 +196,23 @@ async def Quiz(ctx):
                    [typeQuestList], main[3][typeQuestList], main[4][typeQuestList]]
     print("pos ans =", possAnswers)
     RandomAns = random.sample(possAnswers, 5)
-
+    answerIndex = RandomAns.index(main[0][typeQuestList])
+    print("index", answerIndex)
+    EmojiList = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
+    RightEmoji = EmojiList[answerIndex]
+    #answer = RandomAns[answerIndex]
+    #print("answer:", answer)
+    """
+    while i != 5:
+        possAnswer = random.randint(0,6)
+        possAnswer = main[possAnswer][typeQuestList]
+        if possAnswer in possAnswers:
+            possAnswer = random.randint(0, 6)
+            possAnswer = main[possAnswer][typeQuestList]
+        else:
+            possAnswers.append(possAnswer)
+            i += 1
+    """
     if typeQuest == 1:
         question = f"what movie stars {main[QuestionNumber][3]} as {main[QuestionNumber][4]}"
     if typeQuest == 2:
@@ -207,7 +223,6 @@ async def Quiz(ctx):
         question = f"what years was {main[QuestionNumber][0]} released"
     if typeQuest == 5:
         question = f"how much did {main[QuestionNumber][0]} gross"
-        
     print("typeQuestion", typeQuest)
     output = f":one: - {RandomAns[0]} \n :two: - {RandomAns[1]} \n :three: - {RandomAns[2]} \n :four: - {RandomAns[3]} \n :five: - {RandomAns[4]}"
     #output = "k"
@@ -229,6 +244,22 @@ async def Quiz(ctx):
     embed.set_thumbnail(url=img)
     message = ctx.send(embed=embed)
     await message
+    await ctx.message.add_reaction(emoji=f'{EmojiList[0]}')
+    await ctx.message.add_reaction(emoji=f'{EmojiList[1]}')
+    await ctx.message.add_reaction(emoji=f'{EmojiList[2]}')
+    await ctx.message.add_reaction(emoji=f'{EmojiList[3]}')
+    await ctx.message.add_reaction(emoji=f'{EmojiList[4]}')
+
+    @client.event
+    async def on_reaction_add(reaction, user):
+        if reaction.emoji == RightEmoji:
+            print("right")
+            total += 1
+        else:
+            pass
+
+    def NextQuestion():
+        pass
 
     #?year
     #? rating (closer better)
@@ -262,6 +293,8 @@ client = commands.Bot(command_prefix= get_prefix)
 #? top movies
 
 #?top indian
+
+#?bottom
 
 #?bottom
 client.run(f'{Token}')
