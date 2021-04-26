@@ -301,14 +301,18 @@ async def GetTop(ctx):
     main = []
 
     def GetTop():
-        ia = IMDb()
         for i in range(10):
+            ia = IMDb()
             top = ia.get_top250_movies()
-            main.append(f"{top[i]} \n")
+            movies = ia.search_movie(f"{top[i]}")
+            ida = movies[0].movieID
+            movie = ia.get_movie(ida)
+            rate = movie.data['rating']
+            main.append(f"**{top[i]}**  --  {rate} \n")
         stringCast = " "
         output = stringCast.join(main)
         return output
-    
+
     embed = discord.Embed(
         title="top Movies",
         description=GetTop(),
@@ -328,14 +332,19 @@ async def Topin(ctx):
         ia = IMDb()
         for i in range(10):
             top = ia.get_top250_indian_movies()
+            movies = ia.search_movie(f"{top[i]}")
+            ida = movies[0].movieID
+            movie = ia.get_movie(ida)
+            rate = movie.data['rating']
             #? get rating of I
-            main.append(f"**{top[i]} \n**")
+            main.append(f"**{top[i]} ** -- {rate} \n")
+        print(main)
         stringCast = " "
         output = stringCast.join(main)
         return output
 
     embed = discord.Embed(
-        title="top Movies",
+        title="top Indian Movies",
         description=GetTopin(),
         colour=discord.Colour.red()
     )
