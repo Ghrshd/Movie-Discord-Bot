@@ -27,7 +27,7 @@ def mlengh(movie):
     mlengh.time = f"{hours} hours, {minues} minues"
 
 
-@client.command(aliases=['r'])
+@client.command(aliases=['s'])
 async def rating(ctx, *, question):
 
     ia = IMDb()
@@ -59,12 +59,10 @@ async def cast(ctx, *, question):
     movie = ia.get_movie(ida)
     for i in range(5):
         actor = movie['cast'][i]
-        actorAndRoll = f"{actor['name']} as {actor.currentRole} \n \n"
+        actorAndRoll = f"**{actor['name']}** as {actor.currentRole} \n \n"
         cast.append(actorAndRoll)
     stringCast = " "
     output = stringCast.join(cast)
-
-    
 
     embed = discord.Embed(
         title=question,
@@ -83,7 +81,8 @@ async def actorSearch(ctx, *, question):
     actorSear = ia.search_person(question)
     ida = actorSear[0].personID
     bio = ia.get_person_biography(ida)
-    actor = ia.get_person(ida, info=['biography', 'other works','awards','trivia','birth date'])
+    actor = ia.get_person(
+        ida, info=['biography', 'other works', 'awards', 'trivia', 'birth date'])
     trivia = actor['trivia']
     tlen = len(trivia)
     print(tlen)
@@ -94,14 +93,14 @@ async def actorSearch(ctx, *, question):
     li = list(titleStrings.split(","))
     stringCast = " "
 
-    triviaoutput = random.randint(1,tlen)
+    triviaoutput = random.randint(1, tlen)
     output = f"***age:***{actor['birth date']} \n ***trivia:*** {trivia[triviaoutput]} \n \n ***stared in:*** {li[0]}, {li[1]}, {li[2]}, {li[3]}, {li[4]}"
-    #?awards, stars in , main ganres 
+    #?awards, stars in , main ganres
     actor_results = ia.get_person_filmography(ida)
     #print(actor.summary())
     movies_acted = actor.get('actor')
     #print(actor.summary())
-    a =len(actor['other works'])
+    a = len(actor['other works'])
     #print(actor['awards'])
     x = 5
     works = []
@@ -121,12 +120,11 @@ async def actorSearch(ctx, *, question):
     await ctx.send(embed=embed)
 #?game
 
+
 @client.command(aliases=['quiz'])
 async def Quiz(ctx):
     temp = []
     main = []
-    
-
 
     def Getmovie():
         error = 0
@@ -164,9 +162,9 @@ async def Quiz(ctx):
                 temp = []
         return error
 
-
     Getmovie()
     print(Getmovie())
+
     if Getmovie() == "no boxOffice":
         typeQuest = random.randint(1, 4)
         print("yeet code")
@@ -177,7 +175,7 @@ async def Quiz(ctx):
 
     print("typeQuest before", typeQuest)
     print(main)
-
+    EmojiList = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
 
     possAnswers = []
     #* possAnswers = [main[0][0], main[1][0], main[2][0], main[3][0], main[4][0]]
@@ -190,19 +188,19 @@ async def Quiz(ctx):
     if typeQuest == 2:
         typeQuestList = 1
     if typeQuest == 3:
-        typeQuestList =3
+        typeQuestList = 3
     if typeQuest == 4:
         typeQuestList = 2
     if typeQuest == 5:
         typeQuestList = 5
     #? make a more effective random system
-    print("Listval = ",typeQuestList)
-    possAnswers = [main[0][typeQuestList],main[1][typeQuestList],main[2][typeQuestList],main[3][typeQuestList],main[4][typeQuestList]]
+    print("Listval = ", typeQuestList)
+    possAnswers = [main[0][typeQuestList], main[1][typeQuestList], main[2]
+                   [typeQuestList], main[3][typeQuestList], main[4][typeQuestList]]
     print("pos ans =", possAnswers)
-    RandomAns = random.sample(possAnswers,5)
+    RandomAns = random.sample(possAnswers, 5)
     answerIndex = RandomAns.index(main[QuestionNumber][typeQuestList])
-    print("index",answerIndex)
-    EmojiList = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"]
+    print("index", answerIndex)
     RightEmoji = EmojiList[answerIndex]
     #answer = RandomAns[answerIndex]
     #print("answer:", answer)
@@ -211,7 +209,7 @@ async def Quiz(ctx):
     def GetQuestion(main, QuestionNumber, RandomAns, TotalRight):
         if typeQuest == 1:
             question = f"what movie stars {main[QuestionNumber][3]} as {main[QuestionNumber][4]}"
-            
+
         if typeQuest == 2:
             question = f"what is the IMDB rating of {main[QuestionNumber][0]}"
         if typeQuest == 3:
@@ -220,7 +218,7 @@ async def Quiz(ctx):
             question = f"what years was {main[QuestionNumber][0]} released"
         if typeQuest == 5:
             question = f"how much did {main[QuestionNumber][0]} gross"
-        print("typeQuestion",typeQuest)
+        print("typeQuestion", typeQuest)
         output = f":one: - {RandomAns[0]} \n :two: - {RandomAns[1]} \n :three: - {RandomAns[2]} \n :four: - {RandomAns[3]} \n :five: - {RandomAns[4]}"
         FullQuestion.append(question)
         FullQuestion.append(output)
@@ -229,21 +227,18 @@ async def Quiz(ctx):
 
     GetQuestion(main, QuestionNumber, RandomAns, TotalRight)
     #output = "k"
-    print("2nd",RandomAns)
+    print("2nd", RandomAns)
     print("final list val = ", typeQuestList)
-
 
     #print(f"aadada what years was {main[1][0]} released")
     print("question ", FullQuestion[0])
     embed = discord.Embed(
-        title= FullQuestion[0],
-        description= FullQuestion[1],
+        title=FullQuestion[0],
+        description=FullQuestion[1],
         colour=discord.Colour.red()
     )
     #* get the amount anwered right and username + time taken
-    author = ctx.message.author
-    pfp = author.avatar_url
-    img =pfp
+    img = "https://beta-visuals.com/wp-content/uploads/2019/03/Logo-beta-copiafinal.png"
     embed.set_footer(text=f"{QuestionNumber + 1}/5")
     embed.set_thumbnail(url=img)
     message = ctx.send(embed=embed)
@@ -253,16 +248,19 @@ async def Quiz(ctx):
     await ctx.message.add_reaction(emoji=f'{EmojiList[2]}')
     await ctx.message.add_reaction(emoji=f'{EmojiList[3]}')
     await ctx.message.add_reaction(emoji=f'{EmojiList[4]}')
+
     @client.event
     async def on_reaction_add(reaction, user,):
         if reaction.emoji == RightEmoji:
             print("right")
             FullQuestion[2] += 1
-            FullQuestion[3]+= 1
+            FullQuestion[3] += 1  # adding 1 to the question count
+            #?take away the reaction
+            await message.edit('b')
         else:
             FullQuestion[3] += 1
             pass
-    
+
     def NextQuestion():
         pass
 
@@ -293,13 +291,65 @@ async def on_guild_join(guild):
 client = commands.Bot(command_prefix= get_prefix)
 """
 #?suggest
-    #? genre
+#? genre
 
 #? top movies
 
+
+@client.command(aliases=['top'])
+async def GetTop(ctx):
+    main = []
+
+    def GetTop():
+        ia = IMDb()
+        for i in range(10):
+            top = ia.get_top250_movies()
+            main.append(f"{top[i]} \n")
+        stringCast = " "
+        output = stringCast.join(main)
+        return output
+    
+    embed = discord.Embed(
+        title="top Movies",
+        description=GetTop(),
+        colour=discord.Colour.red()
+    )
+    #? split into pages of 10
+    message = ctx.send(embed=embed)
+    await message
 #?top indian
 
-#?bottom 
+
+@client.command(aliases=['topin'])
+async def Topin(ctx):
+    main = []
+
+    def GetTopin():
+        ia = IMDb()
+        for i in range(10):
+            top = ia.get_top250_indian_movies()
+            #? get rating of I
+            main.append(f"**{top[i]} \n**")
+        stringCast = " "
+        output = stringCast.join(main)
+        return output
+
+    embed = discord.Embed(
+        title="top Movies",
+        description=GetTopin(),
+        colour=discord.Colour.red()
+    )
+    #? split into pages of 10
+    #* get the amount anwered right and username + time taken
+    img = "https://beta-visuals.com/wp-content/uploads/2019/03/Logo-beta-copiafinal.png"
+    embed.set_footer(text=f"1/5")
+    embed.set_thumbnail(url=img)
+    message = ctx.send(embed=embed)
+    await message
+#?bottom
+
+#?vote system
+#? what movie, time
 client.run(f'{Token}')
 
 #* https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.wait_for
