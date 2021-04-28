@@ -1,5 +1,8 @@
 # Movie-Discord-Bot
-
+## what i learnt
+-how to use lamda functions
+- Try and except in python
+- async functions in python
 This is a discord bot witch can give information about a given movie 
 
 List of Commands
