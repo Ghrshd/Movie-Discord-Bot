@@ -17,7 +17,7 @@ List of Commands
 |-l or -lengh|How long the movie is|
 |-sum or -summery| Will get -r,-p,-l together|
 |-h or -help|A list of the commands|
-<--
-#what does t
-This is a discord bot witch can give information about a given movie 
--->
+
+
+
+
