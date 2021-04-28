@@ -3,7 +3,7 @@
 - how to use lamda functions
 - Try and except in python
 - async functions in python
-
+- how to use discord and IMDB api 
 
 
 List of Commands
